@@ -22,3 +22,10 @@ def test_scan_ranks_and_logs(tmp_path):
     log = tmp_path / "a.csv"
     scanner.log_alerts(res, str(log), threshold=0)
     assert log.read_text().count("\n") == 3
+
+
+def test_backtest_runs_on_synthetic():
+    from mmd import backtest
+    t = backtest.walk("DEMO", data.synthetic("DEMO", bars=200, seed=3), horizon=3, warmup=100)
+    s = backtest.summarize(t)
+    assert len(t) > 50 and s.n.sum() == len(t)
